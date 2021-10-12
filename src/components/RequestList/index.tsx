@@ -43,6 +43,7 @@ const RequestList: React.FC = () => {
   const { user } = useUser({
     id: Number(router.query.userId),
   });
+  const { user: currentUser } = useUser();
   const [currentFilter, setCurrentFilter] = useState<Filter>(Filter.PENDING);
   const [currentSort, setCurrentSort] = useState<Sort>('added');
   const [currentPageSize, setCurrentPageSize] = useState<number>(10);
@@ -59,7 +60,11 @@ const RequestList: React.FC = () => {
     `/api/v1/request?take=${currentPageSize}&skip=${
       pageIndex * currentPageSize
     }&filter=${currentFilter}&sort=${currentSort}${
-      router.query.userId ? `&requestedBy=${router.query.userId}` : ''
+      router.pathname.startsWith('/profile')
+        ? `&requestedBy=${currentUser?.id}`
+        : router.query.userId
+        ? `&requestedBy=${router.query.userId}`
+        : ''
     }`
   );
 
@@ -115,7 +120,11 @@ const RequestList: React.FC = () => {
       <div className="mb-4 flex flex-col justify-between lg:flex-row lg:items-end">
         <Header
           subtext={
-            router.query.userId ? (
+            router.pathname.startsWith('/profile') ? (
+              <Link href={`/profile`}>
+                <a className="hover:underline">{currentUser?.displayName}</a>
+              </Link>
+            ) : router.query.userId ? (
               <Link href={`/users/${user?.id}`}>
                 <a className="hover:underline">{user?.displayName}</a>
               </Link>

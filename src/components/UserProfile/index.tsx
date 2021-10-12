@@ -2,7 +2,7 @@ import { ArrowCircleRightIcon } from '@heroicons/react/outline';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import React, { useCallback, useEffect, useState } from 'react';
-import { defineMessages, FormattedNumber, useIntl } from 'react-intl';
+import { defineMessages, useIntl } from 'react-intl';
 import useSWR from 'swr';
 import {
   QuotaResponse,
@@ -129,7 +129,15 @@ const UserProfile: React.FC = () => {
                   {intl.formatMessage(messages.totalrequests)}
                 </dt>
                 <dd className="mt-1 text-3xl font-semibold text-white">
-                  <FormattedNumber value={user.requestCount} />
+                  <Link
+                    href={
+                      user.id === currentUser?.id
+                        ? '/profile/requests?filter=all'
+                        : `/users/${user?.id}/requests?filter=all`
+                    }
+                  >
+                    <a>{intl.formatNumber(user.requestCount)}</a>
+                  </Link>
                 </dd>
               </div>
               <div
@@ -249,34 +257,41 @@ const UserProfile: React.FC = () => {
         currentHasPermission(
           [Permission.MANAGE_REQUESTS, Permission.REQUEST_VIEW],
           { type: 'or' }
-        )) && (
-        <>
-          <div className="slider-header">
-            <Link href={`/users/${user?.id}/requests?filter=all`}>
-              <a className="slider-title">
-                <span>{intl.formatMessage(messages.recentrequests)}</span>
-                <ArrowCircleRightIcon />
-              </a>
-            </Link>
-          </div>
-          <Slider
-            sliderKey="requests"
-            isLoading={!requests && !requestError}
-            isEmpty={
-              !!requests && !requestError && requests.results.length === 0
-            }
-            items={(requests?.results ?? []).map((request) => (
-              <RequestCard
-                key={`request-slider-item-${request.id}`}
-                request={request}
-                onTitleData={updateAvailableTitles}
-              />
-            ))}
-            placeholder={<RequestCard.Placeholder />}
-            emptyMessage={intl.formatMessage(messages.norequests)}
-          />
-        </>
-      )}
+        )) &&
+        (!requests || !!requests.results.length) && (
+          <>
+            <div className="slider-header">
+              <Link
+                href={
+                  user.id === currentUser?.id
+                    ? '/profile/requests?filter=all'
+                    : `/users/${user?.id}/requests?filter=all`
+                }
+              >
+                <a className="slider-title">
+                  <span>{intl.formatMessage(messages.recentrequests)}</span>
+                  <ArrowCircleRightIcon />
+                </a>
+              </Link>
+            </div>
+            <Slider
+              sliderKey="requests"
+              isLoading={!requests && !requestError}
+              isEmpty={
+                !!requests && !requestError && requests.results.length === 0
+              }
+              items={(requests?.results ?? []).map((request) => (
+                <RequestCard
+                  key={`request-slider-item-${request.id}`}
+                  request={request}
+                  onTitleData={updateAvailableTitles}
+                />
+              ))}
+              placeholder={<RequestCard.Placeholder />}
+              emptyMessage={intl.formatMessage(messages.norequests)}
+            />
+          </>
+        )}
       {(user.id === currentUser?.id ||
         currentHasPermission(Permission.ADMIN)) &&
         !!watchData?.recentlyWatched.length && (
