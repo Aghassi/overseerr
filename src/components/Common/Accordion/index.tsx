@@ -16,11 +16,15 @@ export interface AccordionChildProps {
   AccordionContent: any;
 }
 
-export const AccordionContent: React.FC<{ isOpen: boolean }> = ({
-  isOpen,
-  children,
-}) => {
-  return <AnimateHeight height={isOpen ? 'auto' : 0}>{children}</AnimateHeight>;
+export const AccordionContent: React.FC<{
+  isOpen: boolean;
+  className?: string;
+}> = ({ isOpen, className, children }) => {
+  return (
+    <AnimateHeight height={isOpen ? 'auto' : 0} className={className}>
+      {children}
+    </AnimateHeight>
+  );
 };
 
 const Accordion: React.FC<AccordionProps> = ({
