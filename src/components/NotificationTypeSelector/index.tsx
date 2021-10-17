@@ -357,17 +357,15 @@ const NotificationTypeSelector: React.FC<NotificationTypeSelectorProps> = ({
           {intl.formatMessage(messages.notificationTypes)}
           {!user && <span className="label-required">*</span>}
         </span>
-        <div className="form-input">
-          <div className="max-w-lg">
-            {availableTypes.map((type) => (
-              <NotificationType
-                key={`notification-type-${type.id}`}
-                option={type}
-                currentTypes={currentTypes}
-                onUpdate={onUpdate}
-              />
-            ))}
-          </div>
+        <div className="max-w-xl form-input">
+          {availableTypes.map((type) => (
+            <NotificationType
+              key={`notification-type-${type.id}`}
+              option={type}
+              currentTypes={currentTypes}
+              onUpdate={onUpdate}
+            />
+          ))}
           {error && <div className="error">{error}</div>}
         </div>
       </div>

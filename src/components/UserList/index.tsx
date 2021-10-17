@@ -54,9 +54,8 @@ const messages = defineMessages({
   deleteconfirm:
     'Are you sure you want to delete this user? All of their request data will be permanently removed.',
   localuser: 'Local User',
-  createlocaluser: 'Create Local User',
-  creating: 'Creating…',
-  create: 'Create',
+  createlocaluser: 'Create User',
+  creating: 'Creating User…',
   validationpasswordminchars:
     'Password is too short; should be a minimum of 8 characters',
   usercreatedfailed: 'Something went wrong while creating the user.',
@@ -75,7 +74,7 @@ const messages = defineMessages({
   sortDisplayName: 'Display Name',
   sortRequests: 'Request Count',
   localLoginDisabled:
-    'The <strong>Enable Local Sign-In</strong> setting is currently disabled.',
+    'The <strong>{applicationTitle} Password</strong> sign-in method is currently disabled.',
 });
 
 type Sort = 'created' | 'updated' | 'requests' | 'displayname';
@@ -315,7 +314,7 @@ const UserList: React.FC = () => {
                 okText={
                   isSubmitting
                     ? intl.formatMessage(messages.creating)
-                    : intl.formatMessage(messages.create)
+                    : intl.formatMessage(messages.createlocaluser)
                 }
                 okDisabled={isSubmitting || !isValid}
                 okButtonType="primary"
@@ -324,6 +323,8 @@ const UserList: React.FC = () => {
                 {!settings.currentSettings.localLogin && (
                   <Alert
                     title={intl.formatMessage(messages.localLoginDisabled, {
+                      applicationTitle:
+                        settings.currentSettings.applicationTitle,
                       strong: function strong(msg) {
                         return (
                           <strong className="font-semibold text-white">
