@@ -335,7 +335,7 @@ const UserList: React.FC = () => {
                     type="warning"
                   />
                 )}
-                {currentHasPermission(Permission.MANAGE_SETTINGS) &&
+                {currentHasPermission(Permission.ADMIN) &&
                   !passwordGenerationEnabled && (
                     <Alert
                       title={intl.formatMessage(
