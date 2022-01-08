@@ -76,7 +76,7 @@ router.get<unknown, StatusResponse>('/status', async (req, res) => {
     commitTag: getCommitTag(),
     updateAvailable,
     commitsBehind,
-    restartRequired: restartFlag.isSet,
+    restartRequired: restartFlag.isSet(),
   });
 });
 
