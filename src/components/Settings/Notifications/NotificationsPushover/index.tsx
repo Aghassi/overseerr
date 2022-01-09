@@ -6,6 +6,7 @@ import { defineMessages, useIntl } from 'react-intl';
 import { useToasts } from 'react-toast-notifications';
 import useSWR from 'swr';
 import * as Yup from 'yup';
+import { PushoverSound } from '../../../../../server/api/pushover';
 import globalMessages from '../../../../i18n/globalMessages';
 import Button from '../../../Common/Button';
 import LoadingSpinner from '../../../Common/LoadingSpinner';
@@ -19,6 +20,8 @@ const messages = defineMessages({
   userToken: 'User or Group Key',
   userTokenTip:
     'Your 30-character <UsersGroupsLink>user or group identifier</UsersGroupsLink>',
+  sound: 'Notification Sound',
+  deviceDefault: 'Device Default',
   validationAccessTokenRequired: 'You must provide a valid application token',
   validationUserTokenRequired: 'You must provide a valid user or group key',
   pushoversettingssaved: 'Pushover notification settings saved successfully!',
@@ -38,6 +41,11 @@ const NotificationsPushover: React.FC = () => {
     error,
     mutate: revalidate,
   } = useSWR('/api/v1/settings/notifications/pushover');
+  const { data: soundsData } = useSWR<PushoverSound[]>(
+    data?.options.accessToken
+      ? `/api/v1/settings/notifications/pushover/sounds?token=${data.options.accessToken}`
+      : null
+  );
 
   const NotificationsPushoverSchema = Yup.object().shape({
     accessToken: Yup.string()
@@ -77,6 +85,7 @@ const NotificationsPushover: React.FC = () => {
         types: data?.types,
         accessToken: data?.options.accessToken,
         userToken: data?.options.userToken,
+        sound: data?.options.sound,
       }}
       validationSchema={NotificationsPushoverSchema}
       onSubmit={async (values) => {
@@ -132,6 +141,7 @@ const NotificationsPushover: React.FC = () => {
               options: {
                 accessToken: values.accessToken,
                 userToken: values.userToken,
+                sound: values.sound,
               },
             });
 
@@ -225,6 +235,30 @@ const NotificationsPushover: React.FC = () => {
                 {errors.userToken && touched.userToken && (
                   <div className="error">{errors.userToken}</div>
                 )}
+              </div>
+            </div>
+            <div className="form-row">
+              <label htmlFor="sound" className="text-label">
+                {intl.formatMessage(messages.sound)}
+              </label>
+              <div className="form-input">
+                <div className="form-input-field">
+                  <Field
+                    as="select"
+                    id="sound"
+                    name="sound"
+                    disabled={!soundsData?.length}
+                  >
+                    <option value="">
+                      {intl.formatMessage(messages.deviceDefault)}
+                    </option>
+                    {soundsData?.map((sound, index) => (
+                      <option key={`sound-${index}`} value={sound.name}>
+                        {sound.description}
+                      </option>
+                    ))}
+                  </Field>
+                </div>
               </div>
             </div>
             <NotificationTypeSelector

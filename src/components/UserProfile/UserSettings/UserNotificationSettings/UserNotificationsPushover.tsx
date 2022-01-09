@@ -6,6 +6,7 @@ import { defineMessages, useIntl } from 'react-intl';
 import { useToasts } from 'react-toast-notifications';
 import useSWR from 'swr';
 import * as Yup from 'yup';
+import { PushoverSound } from '../../../../../server/api/pushover';
 import { UserSettingsNotificationsResponse } from '../../../../../server/interfaces/api/userSettingsInterfaces';
 import useSettings from '../../../../hooks/useSettings';
 import { useUser } from '../../../../hooks/useUser';
@@ -23,6 +24,8 @@ const messages = defineMessages({
   pushoverUserKey: 'User or Group Key',
   pushoverUserKeyTip:
     'Your 30-character <UsersGroupsLink>user or group identifier</UsersGroupsLink>',
+  sound: 'Notification Sound',
+  deviceDefault: 'Device Default',
   validationPushoverApplicationToken:
     'You must provide a valid application token',
   validationPushoverUserKey: 'You must provide a valid user or group key',
@@ -40,6 +43,11 @@ const UserPushoverSettings: React.FC = () => {
     mutate: revalidate,
   } = useSWR<UserSettingsNotificationsResponse>(
     user ? `/api/v1/user/${user?.id}/settings/notifications` : null
+  );
+  const { data: soundsData } = useSWR<PushoverSound[]>(
+    data?.pushoverApplicationToken
+      ? `/api/v1/settings/notifications/pushover/sounds?token=${data.pushoverApplicationToken}`
+      : null
   );
 
   const UserNotificationsPushoverSchema = Yup.object().shape({
@@ -193,6 +201,30 @@ const UserPushoverSettings: React.FC = () => {
                 {errors.pushoverUserKey && touched.pushoverUserKey && (
                   <div className="error">{errors.pushoverUserKey}</div>
                 )}
+              </div>
+            </div>
+            <div className="form-row">
+              <label htmlFor="sound" className="text-label">
+                {intl.formatMessage(messages.sound)}
+              </label>
+              <div className="form-input">
+                <div className="form-input-field">
+                  <Field
+                    as="select"
+                    id="sound"
+                    name="sound"
+                    disabled={!soundsData?.length}
+                  >
+                    <option value="">
+                      {intl.formatMessage(messages.deviceDefault)}
+                    </option>
+                    {soundsData?.map((sound, index) => (
+                      <option key={`sound-${index}`} value={sound.name}>
+                        {sound.description}
+                      </option>
+                    ))}
+                  </Field>
+                </div>
               </div>
             </div>
             <NotificationTypeSelector
