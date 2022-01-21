@@ -193,7 +193,7 @@ class TautulliAPI {
   public async getUserWatchHistory(
     user: User
   ): Promise<TautulliHistoryRecord[]> {
-    let records: TautulliHistoryRecord[] = [];
+    let results: TautulliHistoryRecord[] = [];
 
     try {
       if (!user.plexId) {
@@ -203,7 +203,7 @@ class TautulliAPI {
       const take = 100;
       let start = 0;
 
-      while (records.length < 20) {
+      while (results.length < 20) {
         const tautulliData = (
           await this.axios.get<TautulliHistoryResponse>('/api/v2', {
             params: {
@@ -219,10 +219,10 @@ class TautulliAPI {
         ).data.response.data.data;
 
         if (!tautulliData.length) {
-          return records;
+          return results;
         }
 
-        records = uniqWith(records.concat(tautulliData), (recordA, recordB) =>
+        results = uniqWith(results.concat(tautulliData), (recordA, recordB) =>
           recordA.grandparent_rating_key && recordB.grandparent_rating_key
             ? recordA.grandparent_rating_key === recordB.grandparent_rating_key
             : recordA.parent_rating_key && recordB.parent_rating_key
@@ -233,7 +233,7 @@ class TautulliAPI {
         start += take;
       }
 
-      return records.slice(0, 20);
+      return results.slice(0, 20);
     } catch (e) {
       logger.error(
         'Something went wrong fetching user watch history from Tautulli',
