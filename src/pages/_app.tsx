@@ -160,7 +160,7 @@ CoreApp.getInitialProps = async (initialProps) => {
     hideAvailable: false,
     movie4kEnabled: false,
     series4kEnabled: false,
-    localLogin: false,
+    localLogin: true,
     region: '',
     originalLanguage: '',
     partialRequestsEnabled: true,
