@@ -130,7 +130,6 @@ class PlexAPI {
     });
   }
 
-  // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
   public async getStatus() {
     return await this.plexClient.query('/');
   }
