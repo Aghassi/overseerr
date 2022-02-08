@@ -164,7 +164,7 @@ const SettingsUsers: React.FC = () => {
                           allowPlexSigninDisable ? '' : 'opacity-50'
                         }`}
                       >
-                        <div className="flex items-center h-6">
+                        <div className="flex h-6 items-center">
                           <Field
                             type="checkbox"
                             id="plexLogin"
@@ -177,13 +177,13 @@ const SettingsUsers: React.FC = () => {
                         </div>
                         <label
                           htmlFor="plexLogin"
-                          className="block ml-3 text-sm font-semibold leading-6 text-white"
+                          className="ml-3 block text-sm font-semibold leading-6 text-white"
                         >
                           Plex OAuth
                         </label>
                       </div>
                       <div className="relative flex items-start">
-                        <div className="flex items-center h-6">
+                        <div className="flex h-6 items-center">
                           <Field
                             type="checkbox"
                             id="localLogin"
@@ -195,7 +195,7 @@ const SettingsUsers: React.FC = () => {
                         </div>
                         <label
                           htmlFor="localLogin"
-                          className="block ml-3 text-sm font-semibold leading-6 text-white"
+                          className="ml-3 block text-sm font-semibold leading-6 text-white"
                         >
                           {intl.formatMessage(messages.passwordSignin, {
                             applicationTitle:
@@ -276,7 +276,7 @@ const SettingsUsers: React.FC = () => {
                         {intl.formatMessage(messages.defaultPermissionsTip)}
                       </span>
                     </span>
-                    <div className="max-w-xl form-input">
+                    <div className="form-input max-w-xl">
                       <PermissionEdit
                         currentPermission={values.defaultPermissions}
                         onUpdate={(newPermissions) =>
